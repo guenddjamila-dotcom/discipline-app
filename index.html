@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#16201b">
+<meta name="description" content="The Ledger - Habits, Focus Timer, XP and Achievements">
+<link rel="manifest" href="manifest.webmanifest">
+<title>The Ledger</title>
+
+<style>
+:root{
+  --bg:#101713;
+  --panel:#16201b;
+  --panel2:#1c2922;
+  --paper:#e8dfc8;
+  --muted:#a9aa9e;
+  --gold:#c9962c;
+  --gold2:#e4bd58;
+  --line:#334238;
+  --green:#5d9b72;
+  --danger:#b95c52;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#1b2a22 0,#101713 55%);
+  color:var(--paper);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+
+.container{
+  width:100%;
+  max-width:900px;
+  margin:auto;
+  padding:18px 14px 40px;
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.date{
+  color:var(--muted);
+  font-size:12px;
+  text-align:right;
+}
+
+.card{
+  background:linear-gradient(145deg,var(--panel),#131c17);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  margin:12px 0;
+  box-shadow:0 12px 35px #0004;
+}
+
+h2{
+  font-size:17px;
+  margin:0 0 14px;
+}
+
+.muted{
+  color:var(--muted);
+}
+
+.level{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.level-badge{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  border:2px solid var(--gold);
+  color:var(--gold2);
+  font-size:20px;
+  font-weight:900;
+}
+
+.level-info{
+  flex:1;
+}
+
+.level-title{
+  font-size:18px;
+  font-weight:800;
+}
+
+.xp-text{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:3px;
+}
+
+.progress-bar{
+  height:9px;
+  background:#0c120f;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.progress-fill{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--gold),var(--gold2));
+  transition:.3s;
+}
+
+.install{
+  display:none;
+  width:100%;
+  margin-top:14px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.stat{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:13px;
+}
+
+.stat-number{
+  display:block;
+  font-size:22px;
+  font-weight:900;
+  color:var(--gold2);
+}
+
+.stat-label{
+  font-size:11px;
+  color:var(--muted);
+}
+
+button{
+  font:inherit;
+  border:1px solid var(--line);
+  background:var(--panel2);
+  color:var(--paper);
+  border-radius:11px;
+  padding:10px 13px;
+  cursor:pointer;
+}
+
+button:hover{
+  border-color:var(--gold);
+}
+
+.primary{
+  background:var(--gold);
+  color:#17120a;
+  border-color:var(--gold);
+  font-weight:800;
+}
+
+.habit{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid #ffffff12;
+}
+
+.habit:last-child{
+  border-bottom:0;
+}
+
+.check{
+  width:27px;
+  height:27px;
+  padding:0;
+  display:grid;
+  place-items:center;
+}
+
+.check.done{
+  background:var(--green);
+  border-color:var(--green);
+}
+
+.habit-name{
+  flex:1;
+  font-size:15px;
+}
+
+.done-text{
+  text-decoration:line-through;
+  color:var(--muted);
+}
+
+.delete{
+  color:#d8877d;
+  padding:7px 9px;
+}
+
+.add-habit{
+  display:flex;
+  gap:8px;
+  margin-top:13px;
+}
+
+.add-habit input{
+  flex:1;
+  min-width:0;
+  background:#0d1410;
+  color:var(--paper);
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:11px;
+  outline:none;
+}
+
+.timer{
+  text-align:center;
+}
+
+.mode{
+  color:var(--gold2);
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.time{
+  font-size:clamp(55px,16vw,100px);
+  line-height:1;
+  font-weight:900;
+  margin:16px 0;
+  letter-spacing:2px;
+}
+
+.presets{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.selected{
+  border-color:var(--gold);
+  color:var(--gold2);
+}
+
+.timer-buttons{
+  display:flex;
+  justify-content:center;
+  gap:9px;
+  margin-top:12px;
+}
+
+.chart{
+  display:flex;
+  align-items:end;
+  gap:8px;
+  height:140px;
+}
+
+.day{
+  flex:1;
+  text-align:center;
+  font-size:10px;
+  color:var(--muted);
+}
+
+.column{
+  height:105px;
+  display:flex;
+  align-items:end;
+  justify-content:center;
+}
+
+.bar{
+  width:100%;
+  max-width:30px;
+  min-height:3px;
+  border-radius:7px 7px 2px 2px;
+  background:var(--gold);
+}
+
+.achievements{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+}
+
+.achievement{
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:var(--panel2);
+  opacity:.4;
+}
+
+.achievement.unlocked{
+  opacity:1;
+  border-color:#7b632b;
+}
+
+.achievement-icon{
+  font-size:24px;
+  float:left;
+  margin-right:9px;
+}
+
+.achievement-title{
+  display:block;
+  font-weight:800;
+}
+
+.achievement-description{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:25px;
+}
+
+@media(max-width:600px){
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .achievements{
+    grid-template-columns:1fr;
+  }
+
+  .card{
+    padding:15px;
+  }
+
+  .logo{
+    font-size:21px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <div class="logo">THE LEDGER</div>
+  <div class="date" id="date"></div>
+</header>
+
+<section class="card">
+
+  <div class="level">
+
+    <div class="level-badge" id="level">1</div>
+
+    <div class="level-info">
+
+      <div class="level-title" id="levelTitle">
+        Level 1
+      </div>
+
+      <div class="xp-text" id="xpText">
+        0 / 100 XP
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="xpFill"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <button class="install" id="installBtn">
+    📲 Add to Home Screen
+  </button>
+
+</section>
+
+<section class="stats">
+
+  <div class="stat">
+    <span class="stat-number" id="xp">0</span>
+    <span class="stat-label">⭐ XP</span>
+  </div>
+
+  <div class="stat">
+    <span class="stat-number" id="streak">0</span>
+    <span class="stat-label">🔥 Streak</span>
+  </div>
+
+  <div class="stat">
+    <span class="stat-number" id="sessions">0</span>
+    <span class="stat-label">⏱️ Focus Sessions</span>
+  </div>
+
+  <div class="stat">
+    <span class="stat-number" id="progress">0%</span>
+    <span class="stat-label">📊 Today's Progress</span>
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h2>Habits</h2>
+
+  <div id="habits"></div>
+
+  <div class="add-habit">
+    <input id="habitInput" placeholder="Add a habit...">
+    <button class="primary" id="addBtn">Add</button>
+  </div>
+
+</section>
+
+<section class="card timer">
+
+  <h2>⏱️ Focus Timer</h2>
+
+  <div class="mode" id="mode">
+    FOCUS
+  </div>
+
+  <div class="time" id="time">
+    25:00
+  </div>
+
+  <div class="presets" id="presets"></div>
+
+  <div class="timer-buttons">
+    <button class="primary" id="start">Start</button>
+    <button id="reset">Reset</button>
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h2>📊 Statistics — Last 7 Days</h2>
+
+  <div class="chart" id="chart"></div>
+
+</section>
+
+<section class="card">
+
+  <h2>🏆 Achievements</h2>
+
+  <div class="achievements" id="achievements"></div>
+
+</section>
+
+<div class="footer">
+  The Ledger • Your progress stays on this device.
+</div>
+
+</div>
+
+<script>
+
+const STORAGE_KEY = "the_ledger_v4";
+
+let state =
+  JSON.parse(localStorage.getItem(STORAGE_KEY)) ||
+  {
+    habits: [],
+    xp: 0,
+    days: {},
+    sessions: 0,
+    focusMinutes: 0
+  };
+
+function save(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function today(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function dateKey(date){
+  return date.toISOString().slice(0,10);
+}
+
+function xpNeeded(level){
+  return 100 + (level - 1) * 50;
+}
+
+function getLevel(){
+
+  let xp = state.xp;
+  let level = 1;
+
+  while(xp >= xpNeeded(level)){
+    xp -= xpNeeded(level);
+    level++;
+  }
+
+  return {
+    level:level,
+    current:xp,
+    needed:xpNeeded(level)
+  };
+}
+
+function addXP(amount){
+
+  state.xp += amount;
+
+  save();
+
+  render();
+}
+
+function completedToday(){
+
+  return state.habits.filter(
+    habit => habit.done === today()
+  ).length;
+
+}
+
+function calculateStreak(){
+
+  let count = 0;
+  let date = new Date();
+
+  while(true){
+
+    const key = dateKey(date);
+
+    const hasFocus =
+      (state.days[key] || 0) > 0;
+
+    const hasHabit =
+      state.habits.some(
+        habit => habit.done === key
+      );
+
+    if(!hasFocus && !hasHabit){
+      break;
+    }
+
+    count++;
+
+    date.setDate(
+      date.getDate() - 1
+    );
+  }
+
+  return count;
+}
+
+function renderHabits(){
+
+  const container =
+    document.getElementById("habits");
+
+  container.innerHTML = "";
+
+  state.habits.forEach((habit,index)=>{
+
+    const row =
+      document.createElement("div");
+
+    row.className = "habit";
+
+    const check =
+      document.createElement("button");
+
+    check.className =
+      "check " +
+      (habit.done === today()
+        ? "done"
+        : "");
+
+    check.textContent =
+      habit.done === today()
+        ? "✓"
+        : "";
+
+    check.onclick = ()=>{
+
+      if(habit.done === today()){
+        return;
+      }
+
+      habit.done = today();
+
+      state.xp += 20;
+
+      save();
+
+      render();
+
+    };
+
+    const name =
+      document.createElement("div");
+
+    name.className =
+      "habit-name " +
+      (habit.done === today()
+        ? "done-text"
+        : "");
+
+    name.textContent = habit.name;
+
+    const deleteButton =
+      document.createElement("button");
+
+    deleteButton.className = "delete";
+
+    deleteButton.textContent = "Delete";
+
+    deleteButton.onclick = ()=>{
+
+      state.habits.splice(index,1);
+
+      save();
+
+      render();
+
+    };
+
+    row.append(
+      check,
+      name,
+      deleteButton
+    );
+
+    container.appendChild(row);
+
+  });
+
+}
+
+function renderChart(){
+
+  const chart =
+    document.getElementById("chart");
+
+  chart.innerHTML = "";
+
+  const values = [];
+
+  for(let i=6;i>=0;i--){
+
+    const date = new Date();
+
+    date.setDate(
+      date.getDate() - i
+    );
+
+    values.push([
+      date.toLocaleDateString(
+        "en",
+        {weekday:"short"}
+      ),
+      state.days[dateKey(date)] || 0
+    ]);
+
+  }
+
+  const maximum =
+    Math.max(
+      1,
+      ...values.map(v=>v[1])
+    );
+
+  values.forEach(value=>{
+
+    const day =
+      document.createElement("div");
+
+    day.className = "day";
+
+    const column =
+      document.createElement("div");
+
+    column.className = "column";
+
+    const bar =
+      document.createElement("div");
+
+    bar.className = "bar";
+
+    bar.style.height =
+      (value[1] / maximum * 105) + "px";
+
+    column.appendChild(bar);
+
+    day.append(
+      column,
+      value[0]
+    );
+
+    chart.appendChild(day);
+
+  });
+
+}
+
+const achievements = [
+
+  [
+    "🌱",
+    "First Step",
+    "Complete your first habit",
+    state => state.xp >= 20
+  ],
+
+  [
+    "⏱️",
+    "Focused",
+    "Complete your first focus session",
+    state => state.sessions >= 1
+  ],
+
+  [
+    "🔥",
+    "On Fire",
+    "Reach a 3-day streak",
+    state => calculateStreak() >= 3
+  ],
+
+  [
+    "🔥",
+    "Unstoppable",
+    "Reach a 7-day streak",
+    state => calculateStreak() >= 7
+  ],
+
+  [
+    "⭐",
+    "XP Hunter",
+    "Earn 250 XP",
+    state => state.xp >= 250
+  ],
+
+  [
+    "🏆",
+    "Level 5",
+    "Reach Level 5",
+    state => getLevel().level >= 5
+  ],
+
+  [
+    "💪",
+    "Dedicated",
+    "Complete 25 focus sessions",
+    state => state.sessions >= 25
+  ],
+
+  [
+    "👑",
+    "Legend",
+    "Earn 1000 XP",
+    state => state.xp >= 1000
+  ]
+
+];
+
+function renderAchievements(){
+
+  const container =
+    document.getElementById(
+      "achievements"
+    );
+
+  container.innerHTML = "";
+
+  achievements.forEach(
+    achievement=>{
+
+      const unlocked =
+        achievement[3](state);
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "achievement " +
+        (unlocked
+          ? "unlocked"
+          : "");
+
+      card.innerHTML = `
+        <span class="achievement-icon">
+          ${achievement[0]}
+        </span>
+
+        <span class="achievement-title">
+          ${achievement[1]}
+          ${unlocked ? " ✓" : ""}
+        </span>
+
+        <span class="achievement-description">
+          ${achievement[2]}
+        </span>
+      `;
+
+      container.appendChild(card);
+
+    }
+  );
+
+}
+
+function render(){
+
+  const info = getLevel();
+
+  document.getElementById(
+    "level"
+  ).textContent = info.level;
+
+  document.getElementById(
+    "levelTitle"
+  ).textContent =
+    "Level " + info.level;
+
+  document.getElementById(
+    "xp"
+  ).textContent = state.xp;
+
+  document.getElementById(
+    "xpText"
+  ).textContent =
+    `${info.current} / ${info.needed} XP`;
+
+  document.getElementById(
+    "xpFill"
+  ).style.width =
+    (info.current / info.needed * 100)
+    + "%";
+
+  document.getElementById(
+    "streak"
+  ).textContent =
+    calculateStreak();
+
+  document.getElementById(
+    "sessions"
+  ).textContent =
+    state.sessions;
+
+  const total =
+    state.habits.length;
+
+  const completed =
+    completedToday();
+
+  document.getElementById(
+    "progress"
+  ).textContent =
+    (total
+      ? Math.round(
+          completed / total * 100
+        )
+      : 0)
+    + "%";
+
+  renderHabits();
+  renderChart();
+  renderAchievements();
+
+}
+
+document.getElementById(
+  "date"
+).textContent =
+  new Date().toLocaleDateString(
+    "en",
+    {
+      weekday:"long",
+      year:"numeric",
+      month:"long",
+      day:"numeric"
+    }
+  );
+
+document.getElementById(
+  "addBtn"
+).onclick = ()=>{
+
+  const input =
+    document.getElementById(
+      "habitInput"
+    );
+
+  const value =
+    input.value.trim();
+
+  if(!value){
+    return;
+  }
+
+  state.habits.push({
+    name:value,
+    done:null
+  });
+
+  input.value = "";
+
+  save();
+
+  render();
+
+};
+
+document.getElementById(
+  "habitInput"
+).onkeydown = event => {
+
+  if(event.key === "Enter"){
+    document.getElementById(
+      "addBtn"
+    ).click();
+  }
+
+};
+
+let seconds = 25 * 60;
+let timer = null;
+let mode = "focus";
+let selectedMinutes = 25;
+
+function updateTime(){
+
+  const minutes =
+    Math.floor(seconds / 60);
+
+  const remainingSeconds =
+    seconds % 60;
+
+  document.getElementById(
+    "time"
+  ).textContent =
+    String(minutes).padStart(2,"0")
+    + ":" +
+    String(remainingSeconds).padStart(2,"0");
+
+  document.getElementById(
+    "mode"
+  ).textContent =
+    mode === "focus"
+      ? "FOCUS"
+      : "BREAK";
+
+}
+
+[5,15,25,45,60].forEach(
+  minutes=>{
+
+    const button =
+      document.createElement("button");
+
+    button.textContent =
+      minutes + " min";
+
+    if(minutes === 25){
+      button.className =
+        "selected";
+    }
+
+    button.onclick = ()=>{
+
+      selectedMinutes = minutes;
+
+      clearInterval(timer);
+
+      timer = null;
+
+      mode = "focus";
+
+      seconds =
+        minutes * 60;
+
+      document
+        .querySelectorAll(".presets button")
+        .forEach(
+          b => b.classList.remove(
+            "selected"
+          )
+        );
+
+      button.classList.add(
+        "selected"
+      );
+
+      document.getElementById(
+        "start"
+      ).textContent = "Start";
+
+      updateTime();
+
+    };
+
+    document
+      .getElementById("presets")
+      .appendChild(button);
+
+  }
+);
+
+function beep(){
+
+  try{
+
+    const audio =
+      new AudioContext();
+
+    const oscillator =
+      audio.createOscillator();
+
+    const gain =
+      audio.createGain();
+
+    oscillator.connect(gain);
+
+    gain.connect(audio.destination);
+
+    oscillator.frequency.value =
+      880;
+
+    gain.gain.value =
+      0.08;
+
+    oscillator.start();
+
+    oscillator.stop(
+      audio.currentTime + 0.3
+    );
+
+  }catch(error){}
+
+}
+
+document.getElementById(
+  "start"
+).onclick = ()=>{
+
+  if(timer){
+
+    clearInterval(timer);
+
+    timer = null;
+
+    document.getElementById(
+      "start"
+    ).textContent = "Start";
+
+    return;
+
+  }
+
+  document.getElementById(
+    "start"
+  ).textContent = "Pause";
+
+  timer = setInterval(()=>{
+
+    seconds--;
+
+    updateTime();
+
+    if(seconds <= 0){
+
+      clearInterval(timer);
+
+      timer = null;
+
+      beep();
+
+      if(mode === "focus"){
+
+        state.sessions++;
+
+        state.focusMinutes +=
+          selectedMinutes;
+
+        const key = today();
+
+        state.days[key] =
+          (state.days[key] || 0) + 1;
+
+        state.xp += 50;
+
+        mode = "break";
+
+        seconds = 5 * 60;
+
+        document.getElementById(
+          "start"
+        ).textContent = "Start";
+
+        save();
+
+        render();
+
+      }else{
+
+        mode = "focus";
+
+        seconds =
+          selectedMinutes * 60;
+
+        save();
+
+      }
+
+      updateTime();
+
+    }
+
+  },1000);
+
+};
+
+document.getElementById(
+  "reset"
+).onclick = ()=>{
+
+  clearInterval(timer);
+
+  timer = null;
+
+  mode = "focus";
+
+  seconds =
+    selectedMinutes * 60;
+
+  document.getElementById(
+    "start"
+  ).textContent = "Start";
+
+  updateTime();
+
+};
+
+let deferredPrompt = null;
+
+window.addEventListener(
+  "beforeinstallprompt",
+  event=>{
+
+    event.preventDefault();
+
+    deferredPrompt = event;
+
+    document.getElementById(
+      "installBtn"
+    ).style.display = "block";
+
+  }
+);
+
+document.getElementById(
+  "installBtn"
+).onclick = async ()=>{
+
+  if(!deferredPrompt){
+    return;
+  }
+
+  deferredPrompt.prompt();
+
+  await deferredPrompt.userChoice;
+
+  deferredPrompt = null;
+
+};
+
+updateTime();
+render();
+
+</script>
+
+</body>
+      </html>
